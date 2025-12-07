@@ -14,4 +14,21 @@ class UserMapper {
                 user.getBirthdate(),
                 user.getEmail());
     }
+
+    User toDomain(UserDto userDto) {
+        return new User(
+                userDto.firstName(),
+                userDto.lastName(),
+                userDto.birthdate(),
+                userDto.email());
+    }
+
+    UserDto toUserData(User user) {
+        return new UserDto(user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                null,
+                null
+        );
+    }
 }
