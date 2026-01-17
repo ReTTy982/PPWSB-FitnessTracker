@@ -6,6 +6,9 @@ import pl.wsb.fitnesstracker.user.api.User;
 import pl.wsb.fitnesstracker.user.api.UserProvider;
 import pl.wsb.fitnesstracker.user.api.UserService;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,4 +45,12 @@ class UserServiceImpl implements UserService, UserProvider {
         return userRepository.findAll();
     }
 
-}
+    public void deleteUser(final Long id){
+        userRepository.deleteById(id);
+    }
+
+    public List<User> findUserByAge(final Integer age) {
+        return userRepository.findAll().stream().filter(u -> Period.between(u.getBirthdate(), LocalDate.now()).getYears() > age).toList();
+        }
+
+    }

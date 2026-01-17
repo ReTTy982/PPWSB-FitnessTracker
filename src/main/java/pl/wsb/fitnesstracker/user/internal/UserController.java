@@ -55,8 +55,18 @@ class UserController {
         return createdUserDto;
     }
 
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable long id) {
+        userService.deleteUser(id);
+    }
 
-
+    @GetMapping("userOlderThan/{age}")
+    public List<UserDto> getUserOlderThan(@PathVariable Integer age) {
+        return userService.findUserByAge(age)
+                .stream()
+                .map(userMapper::toDto)
+                .toList();
+    }
 
 
 }
