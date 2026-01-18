@@ -3,11 +3,11 @@ package pl.wsb.fitnesstracker.user.internal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pl.wsb.fitnesstracker.user.api.User;
+import pl.wsb.fitnesstracker.user.api.UserDto;
 import pl.wsb.fitnesstracker.user.api.UserProvider;
 import pl.wsb.fitnesstracker.user.api.UserService;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.List;
 import java.util.Optional;
@@ -52,5 +52,17 @@ class UserServiceImpl implements UserService, UserProvider {
     public List<User> findUserByAge(final Integer age) {
         return userRepository.findAll().stream().filter(u -> Period.between(u.getBirthdate(), LocalDate.now()).getYears() > age).toList();
         }
+
+
+    public void updateUser(final Long userId, final UserDto userData) {
+        User user = userRepository.findById(userId).orElseThrow();
+
+        user.setFirstName(userData.firstName());
+        user.setLastName(userData.lastName());
+        user.setBirthdate(userData.birthdate());
+        user.setEmail(userData.email());
+
+        userRepository.save(user);
+    }
 
     }
