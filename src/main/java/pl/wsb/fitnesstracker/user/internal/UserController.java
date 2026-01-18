@@ -1,11 +1,13 @@
 package pl.wsb.fitnesstracker.user.internal;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pl.wsb.fitnesstracker.user.api.User;
 import pl.wsb.fitnesstracker.user.api.UserDto;
 import pl.wsb.fitnesstracker.user.api.UserNotFoundException;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -25,7 +27,7 @@ class UserController {
         this.userMapper = userMapper;
     }
 
-    @GetMapping
+    @GetMapping("/simple")
     public List<UserDto> getAllUsers() {
         return userService.findAllUsers()
                 .stream()
@@ -62,17 +64,21 @@ class UserController {
         userService.deleteUser(id);
     }
 
-    @GetMapping("userOlderThan/{age}")
-    public List<UserDto> getUserOlderThan(@PathVariable Integer age) {
-        return userService.findUserByAge(age)
-                .stream()
+    @GetMapping("/older/{time}")
+    public List<UserDto> getUserOlderThan(
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate time
+    ) {
+        return userService.findAllUsers().stream()
+                .filter(u -> u.getBirthdate().isBefore(time))
                 .map(userMapper::toDto)
                 .toList();
     }
-    @GetMapping("/email/{email}")
-    public UserDto getUserByEmail(@PathVariable String email) {
+
+
+    @GetMapping("/email")
+    public List<UserDto> getUserByEmail(@RequestParam String email) {
         User user = userService.getUserByEmail(email).orElseThrow();
-        return userMapper.toDto(user);
+        return List.of(userMapper.toDto(user));
     }
 
 
